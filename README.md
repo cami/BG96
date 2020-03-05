@@ -20,7 +20,7 @@ It is assumed that this library is used with ArduinoIDE.
 ## Install
 
 ```
-$ git clone git@github.com:cami/BG96_lib_for_Arduino.git
+$ git clone git@github.com:cami/BG96.git
 ```
 
 Clone this library or download as a zip to your ArduinoIDE library.
