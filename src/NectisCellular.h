@@ -119,8 +119,9 @@ public:
     bool HttpPost2(const char *url, const char *data, int *responseCode, char *recv_data, int recv_dataSize , const NectisCellularHttpHeader &header);
 
     void SoftReset();
-    void Begin();
-    void End();
+    void Bg96Begin();
+    void Bg96End();
+    bool Bg96TurnOff();
     void InitLteM();
     void InitNbIoT();
 
