@@ -2,11 +2,11 @@
  * Get RSSI.
  */
 
-#include "NectisCellular.h"
+#include "NectisCellularBG96.h"
 
 #define INTERVAL  (5000)
 
-NectisCellular Nectis;
+NectisCellularBG96 BG96;
 
 
 void setup() {
@@ -16,21 +16,21 @@ void setup() {
   Serial.println("--- START ---------------------------------------------------");
 
   Serial.println("### I/O Initialize.");
-  Nectis.Init();
+  BG96.Init();
   delay(100);
   Serial.println("### Power supply cellular ON.");
-  Nectis.PowerSupplyCellular(true);
+  BG96.PowerSupplyCellular(true);
   delay(100);
 
-  Nectis.Bg96Begin();
-  Nectis.InitLteM();
+  BG96.Bg96Begin();
+  BG96.InitLteM();
 
   Serial.println("### Setup completed.");
 }
 
 void loop() {
   Serial.println("### Get RSSI.");
-  int rssi = Nectis.GetReceivedSignalStrengthIndicator();
+  int rssi = BG96.GetReceivedSignalStrengthIndicator();
 
   Serial.print("RSSI=");
   Serial.print(rssi);

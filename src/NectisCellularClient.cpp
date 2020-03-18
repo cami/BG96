@@ -9,9 +9,9 @@
 #define CONNECT_TRUNCATED               (-3)
 #define CONNECT_INVALID_RESPONSE        (-4)
 
-NectisCellularClient::NectisCellularClient(NectisCellular* Nectis)
+NectisCellularClient::NectisCellularClient(NectisCellularBG96* BG96)
 {
-	_Nectis = Nectis;
+	_BG96 = BG96;
 	_ConnectId = -1;
 	_ReceiveBuffer = new byte[RECEIVE_MAX_LENGTH];
 }
@@ -32,7 +32,7 @@ int NectisCellularClient::connect(IPAddress ip, uint16_t port)
 	ipStr += String(ip[2]);
 	ipStr += ".";
 	ipStr += String(ip[3]);
-	int connectId = _Nectis->SocketOpen(ipStr.c_str(), port, NectisCellular::SOCKET_TCP);
+	int connectId = _BG96->SocketOpen(ipStr.c_str(), port, NectisCellularBG96::SOCKET_TCP);
 	if (connectId < 0) return CONNECT_INVALID_SERVER;
 	_ConnectId = connectId;
 
@@ -43,7 +43,7 @@ int NectisCellularClient::connect(const char* host, uint16_t port)
 {
 	if (connected()) return CONNECT_INVALID_RESPONSE;	// Already connected.
 
-	int connectId = _Nectis->SocketOpen(host, port, NectisCellular::SOCKET_TCP);
+	int connectId = _BG96->SocketOpen(host, port, NectisCellularBG96::SOCKET_TCP);
 	if (connectId < 0) return CONNECT_INVALID_SERVER;
 	_ConnectId = connectId;
 
@@ -54,7 +54,7 @@ size_t NectisCellularClient::write(uint8_t data)
 {
 	if (!connected()) return 0;
 
-	if (!_Nectis->SocketSend(_ConnectId, &data, 1)) return 0;
+	if (!_BG96->SocketSend(_ConnectId, &data, 1)) return 0;
 
 	return 1;
 }
@@ -63,7 +63,7 @@ size_t NectisCellularClient::write(const uint8_t* buf, size_t size)
 {
 	if (!connected()) return 0;
 
-	if (!_Nectis->SocketSend(_ConnectId, buf, size)) return 0;
+	if (!_BG96->SocketSend(_ConnectId, buf, size)) return 0;
 
 	return size;
 }
@@ -72,7 +72,7 @@ int NectisCellularClient::available()
 {
 	if (!connected()) return 0;
 
-	int receiveSize = _Nectis->SocketReceive(_ConnectId, _ReceiveBuffer, RECEIVE_MAX_LENGTH);
+	int receiveSize = _BG96->SocketReceive(_ConnectId, _ReceiveBuffer, RECEIVE_MAX_LENGTH);
 	for (int i = 0; i < receiveSize; i++) _ReceiveQueue.push(_ReceiveBuffer[i]);
 
 	return _ReceiveQueue.size();
@@ -126,7 +126,7 @@ void NectisCellularClient::stop()
 {
 	if (!connected()) return;
 
-	_Nectis->SocketClose(_ConnectId);
+	_BG96->SocketClose(_ConnectId);
 	_ConnectId = -1;
 	while (!_ReceiveQueue.empty()) _ReceiveQueue.pop();
 }

@@ -4,19 +4,19 @@
 #include "Stopwatch.h"
 #include <string>
 
-class NectisCellular;
+class NectisCellularBG96;
 
 class AtSerial
 {
 private:
 	SerialAPI* _Serial;
-	NectisCellular* _Nectis;
+	NectisCellularBG96* _BG96;
 	unsigned long _EchoOn;
 
 	bool ReadResponseInternal(const char* pattern, unsigned long timeout, std::string* response, int responseMaxLength);
 
 public:
-	AtSerial(SerialAPI* serial, NectisCellular* nectis);
+	AtSerial(SerialAPI* serial, NectisCellularBG96* bg96);
 
 	void SetEcho(bool on);
 

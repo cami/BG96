@@ -1,8 +1,8 @@
-#include <NectisCellular.h>
+#include <NectisCellularBG96.h>
 
 #define WEBURL       "https://httpbin.org/ip"
 
-NectisCellular Nectis;
+NectisCellularBG96 BG96;
 
 void setup() {
   char data[1024];
@@ -14,19 +14,19 @@ void setup() {
   Serial.println("--- START ---------------------------------------------------");
 
   Serial.println("### I/O Initialize.");
-  Nectis.Init();
+  BG96.Init();
   delay(100);
   Serial.println("### Power supply cellular ON.");
-  Nectis.PowerSupplyCellular(true);
+  BG96.PowerSupplyCellular(true);
   delay(100);
 
-  Nectis.Bg96Begin();
-  Nectis.InitLteM();
+  BG96.Bg96Begin();
+  BG96.InitLteM();
 
   Serial.println("### Setup completed.");
 
   Serial.println("GET " WEBURL);
-  status = Nectis.HttpGet(WEBURL, data, sizeof(data));
+  status = BG96.HttpGet(WEBURL, data, sizeof(data));
   
   Serial.print("RecvBytes:");
   Serial.println(status);

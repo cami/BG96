@@ -1,5 +1,5 @@
 #include "NectisCellularConfig.h"
-#include "NectisCellular.h"
+#include "NectisCellularBG96.h"
 
 #include "Internal/Debug.h"
 #include "Internal/StringBuilder.h"
@@ -51,7 +51,7 @@ static bool SplitUrl(const char* url, const char** host, int* hostLength, const 
 ////////////////////////////////////////////////////////////////////////////////////////
 // WioCellular
 
-bool NectisCellular::ReturnError(int lineNumber, bool value, NectisCellular::ErrorCodeType errorCode)
+bool NectisCellularBG96::ReturnError(int lineNumber, bool value, NectisCellularBG96::ErrorCodeType errorCode)
 {
 	_LastErrorCode = errorCode;
 
@@ -63,7 +63,7 @@ bool NectisCellular::ReturnError(int lineNumber, bool value, NectisCellular::Err
 	return value;
 }
 
-int NectisCellular::ReturnError(int lineNumber, int value, NectisCellular::ErrorCodeType errorCode)
+int NectisCellularBG96::ReturnError(int lineNumber, int value, NectisCellularBG96::ErrorCodeType errorCode)
 {
 	_LastErrorCode = errorCode;
 
@@ -75,12 +75,12 @@ int NectisCellular::ReturnError(int lineNumber, int value, NectisCellular::Error
 	return value;
 }
 
-bool NectisCellular::IsBusy() const
+bool NectisCellularBG96::IsBusy() const
 {
 	return digitalRead(MODULE_STATUS_PIN) ? false : true;
 }
 
-bool NectisCellular::IsRespond()
+bool NectisCellularBG96::IsRespond()
 {
 #ifndef ARDUINO_ARCH_NRF52
 	auto writeTimeout = Serial1.getWriteTimeout();
@@ -105,7 +105,7 @@ bool NectisCellular::IsRespond()
 	return true;
 }
 
-bool NectisCellular::Reset()
+bool NectisCellularBG96::Reset()
 {
 	digitalWrite(MODULE_RESET_PIN, HIGH);
 	delay(200);
@@ -115,7 +115,7 @@ bool NectisCellular::Reset()
 	return true;
 }
 
-bool NectisCellular::TurnOn()
+bool NectisCellularBG96::TurnOn()
 {
 	delay(100);
 	digitalWrite(MODULE_PWRKEY_PIN, HIGH);
@@ -125,7 +125,7 @@ bool NectisCellular::TurnOn()
 	return true;
 }
 
-bool NectisCellular::HttpSetUrl(const char* url)
+bool NectisCellularBG96::HttpSetUrl(const char* url)
 {
 	StringBuilder str;
 	if (!str.WriteFormat("AT+QHTTPURL=%d", strlen(url))) return false;
@@ -138,21 +138,21 @@ bool NectisCellular::HttpSetUrl(const char* url)
 	return true;
 }
 
-//bool NectisCellular::ReadResponseCallback(const char* response)
+//bool NectisCellularBG96::ReadResponseCallback(const char* response)
 //{
 //	return false;
 //}
 
-NectisCellular::NectisCellular() : _SerialAPI(&Serial1), _AtSerial(&_SerialAPI, this), _AccessTechnology(ACCESS_TECHNOLOGY_NONE), _SelectNetworkMode(SELECT_NETWORK_MODE_NONE)
+NectisCellularBG96::NectisCellularBG96() : _SerialAPI(&Serial1), _AtSerial(&_SerialAPI, this), _AccessTechnology(ACCESS_TECHNOLOGY_NONE), _SelectNetworkMode(SELECT_NETWORK_MODE_NONE)
 {
 }
 
-NectisCellular::ErrorCodeType NectisCellular::GetLastError() const
+NectisCellularBG96::ErrorCodeType NectisCellularBG96::GetLastError() const
 {
 	return _LastErrorCode;
 }
 
-void NectisCellular::Init()
+void NectisCellularBG96::Init()
 {
 	////////////////////
 	// Module
@@ -191,17 +191,17 @@ void NectisCellular::Init()
 	// pinMode(SD_POWR_PIN, OUTPUT); digitalWrite(SD_POWR_PIN, LOW);
 }
 
-void NectisCellular::PowerSupplyCellular(bool on)
+void NectisCellularBG96::PowerSupplyCellular(bool on)
 {
 	digitalWrite(MODULE_PWR_PIN, on ? HIGH : LOW);
 }
 
-void NectisCellular::PowerSupplyGrove(bool on)
+void NectisCellularBG96::PowerSupplyGrove(bool on)
 {
 	digitalWrite(GROVE_VCCB_PIN, on ? HIGH : LOW);
 }
 
-bool NectisCellular::TurnOnOrReset()
+bool NectisCellularBG96::TurnOnOrReset()
 {
 	std::string response;
 	ArgumentParser parser;
@@ -309,7 +309,7 @@ bool NectisCellular::TurnOnOrReset()
 	return RET_OK(true);
 }
 
-bool NectisCellular::TurnOff()
+bool NectisCellularBG96::TurnOff()
 {
 	if (!_AtSerial.WriteCommandAndReadResponse("AT+QPOWD", "^OK$", 500, NULL)) return RET_ERR(false, E_UNKNOWN);
 	if (!_AtSerial.ReadResponse("^POWERED DOWN$", 60000, NULL)) return RET_ERR(false, E_UNKNOWN);
@@ -317,7 +317,7 @@ bool NectisCellular::TurnOff()
 	return RET_OK(true);
 }
 
-int NectisCellular::GetIMEI(char* imei, int imeiSize)
+int NectisCellularBG96::GetIMEI(char* imei, int imeiSize)
 {
 	std::string response;
 	std::string imeiStr;
@@ -335,7 +335,7 @@ int NectisCellular::GetIMEI(char* imei, int imeiSize)
 	return RET_OK((int)strlen(imei));
 }
 
-int NectisCellular::GetIMSI(char* imsi, int imsiSize)
+int NectisCellularBG96::GetIMSI(char* imsi, int imsiSize)
 {
 	std::string response;
 	std::string imsiStr;
@@ -353,7 +353,7 @@ int NectisCellular::GetIMSI(char* imsi, int imsiSize)
 	return RET_OK((int)strlen(imsi));
 }
 
-int NectisCellular::GetICCID(char* iccid, int iccidSize)
+int NectisCellularBG96::GetICCID(char* iccid, int iccidSize)
 {
 	std::string response;
 
@@ -368,7 +368,7 @@ int NectisCellular::GetICCID(char* iccid, int iccidSize)
 	return RET_OK((int)strlen(iccid));
 }
 
-int NectisCellular::GetPhoneNumber(char* number, int numberSize)
+int NectisCellularBG96::GetPhoneNumber(char* number, int numberSize)
 {
 	std::string response;
 	ArgumentParser parser;
@@ -392,7 +392,7 @@ int NectisCellular::GetPhoneNumber(char* number, int numberSize)
 	return RET_OK((int)strlen(number));
 }
 
-int NectisCellular::GetReceivedSignalStrength()
+int NectisCellularBG96::GetReceivedSignalStrength()
 {
 	std::string response;
 	ArgumentParser parser;
@@ -415,7 +415,7 @@ int NectisCellular::GetReceivedSignalStrength()
 	return RET_OK(-999);
 }
 
-bool NectisCellular::GetTime(struct tm* tim)
+bool NectisCellularBG96::GetTime(struct tm* tim)
 {
 	std::string response;
 
@@ -477,19 +477,19 @@ bool NectisCellular::GetTime(struct tm* tim)
 }
 
 #if defined ARDUINO_NECTIS
-void NectisCellular::SetAccessTechnology(AccessTechnologyType technology)
+void NectisCellularBG96::SetAccessTechnology(AccessTechnologyType technology)
 {
 	_AccessTechnology = technology;
 }
 #endif // ARDUINO_NECTIS
 
-void NectisCellular::SetSelectNetwork(SelectNetworkModeType mode, const char* plmn)
+void NectisCellularBG96::SetSelectNetwork(SelectNetworkModeType mode, const char* plmn)
 {
 	_SelectNetworkMode = mode;
 	_SelectNetworkPLMN = plmn;
 }
 
-bool NectisCellular::WaitForCSRegistration(long timeout)
+bool NectisCellularBG96::WaitForCSRegistration(long timeout)
 {
 	std::string response;
 	ArgumentParser parser;
@@ -516,7 +516,7 @@ bool NectisCellular::WaitForCSRegistration(long timeout)
 	return RET_OK(true);
 }
 
-bool NectisCellular::WaitForPSRegistration(long timeout)
+bool NectisCellularBG96::WaitForPSRegistration(long timeout)
 {
 	std::string response;
 	ArgumentParser parser;
@@ -564,7 +564,7 @@ bool NectisCellular::WaitForPSRegistration(long timeout)
 	return RET_OK(true);
 }
 
-bool NectisCellular::Activate(const char* accessPointName, const char* userName, const char* password, long waitForRegistTimeout)
+bool NectisCellularBG96::Activate(const char* accessPointName, const char* userName, const char* password, long waitForRegistTimeout)
 {
 	std::string response;
 	ArgumentParser parser;
@@ -640,7 +640,7 @@ bool NectisCellular::Activate(const char* accessPointName, const char* userName,
 	return RET_OK(true);
 }
 
-bool NectisCellular::Deactivate()
+bool NectisCellularBG96::Deactivate()
 {
 	if (!_AtSerial.WriteCommandAndReadResponse("AT+QIDEACT=1", "^OK$", 40000, NULL)) return RET_ERR(false, E_UNKNOWN);
 	if (!_AtSerial.WriteCommandAndReadResponse("AT+COPS=2", "^OK$", 120000, NULL)) return RET_ERR(false, E_UNKNOWN);
@@ -648,7 +648,7 @@ bool NectisCellular::Deactivate()
 	return RET_OK(true);
 }
 
-bool NectisCellular::GetDNSAddress(IPAddress* ip1, IPAddress* ip2)
+bool NectisCellularBG96::GetDNSAddress(IPAddress* ip1, IPAddress* ip2)
 {
 	std::string response;
 	std::string ipsStr;
@@ -679,12 +679,12 @@ bool NectisCellular::GetDNSAddress(IPAddress* ip1, IPAddress* ip2)
 	return RET_OK(true);
 }
 
-bool NectisCellular::SetDNSAddress(const IPAddress& ip1)
+bool NectisCellularBG96::SetDNSAddress(const IPAddress& ip1)
 {
 	return SetDNSAddress(ip1, INADDR_NONE);
 }
 
-bool NectisCellular::SetDNSAddress(const IPAddress& ip1, const IPAddress& ip2)
+bool NectisCellularBG96::SetDNSAddress(const IPAddress& ip1, const IPAddress& ip2)
 {
 	StringBuilder str;
 	if (!str.WriteFormat("AT+QIDNSCFG=1,\"%u.%u.%u.%u\",\"%u.%u.%u.%u\"", ip1[0], ip1[1], ip1[2], ip1[3], ip2[0], ip2[1], ip2[2], ip2[3])) return RET_ERR(false, E_UNKNOWN);
@@ -693,7 +693,7 @@ bool NectisCellular::SetDNSAddress(const IPAddress& ip1, const IPAddress& ip2)
 	return RET_OK(true);
 }
 
-int NectisCellular::SocketOpen(const char* host, int port, SocketType type)
+int NectisCellularBG96::SocketOpen(const char* host, int port, SocketType type)
 {
 	std::string response;
 	ArgumentParser parser;
@@ -745,7 +745,7 @@ int NectisCellular::SocketOpen(const char* host, int port, SocketType type)
 	return RET_OK(connectId);
 }
 
-bool NectisCellular::SocketSend(int connectId, const byte* data, int dataSize)
+bool NectisCellularBG96::SocketSend(int connectId, const byte* data, int dataSize)
 {
 	if (connectId >= CONNECT_ID_NUM) return RET_ERR(false, E_UNKNOWN);
 	if (dataSize > 1460) return RET_ERR(false, E_UNKNOWN);
@@ -760,12 +760,12 @@ bool NectisCellular::SocketSend(int connectId, const byte* data, int dataSize)
 	return RET_OK(true);
 }
 
-bool NectisCellular::SocketSend(int connectId, const char* data)
+bool NectisCellularBG96::SocketSend(int connectId, const char* data)
 {
 	return SocketSend(connectId, (const byte*)data, strlen(data));
 }
 
-int NectisCellular::SocketReceive(int connectId, byte* data, int dataSize)
+int NectisCellularBG96::SocketReceive(int connectId, byte* data, int dataSize)
 {
 	std::string response;
 
@@ -785,7 +785,7 @@ int NectisCellular::SocketReceive(int connectId, byte* data, int dataSize)
 	return RET_OK(dataLength);
 }
 
-int NectisCellular::SocketReceive(int connectId, char* data, int dataSize)
+int NectisCellularBG96::SocketReceive(int connectId, char* data, int dataSize)
 {
 	int dataLength = SocketReceive(connectId, (byte*)data, dataSize - 1);
 	if (dataLength >= 0) data[dataLength] = '\0';
@@ -793,7 +793,7 @@ int NectisCellular::SocketReceive(int connectId, char* data, int dataSize)
 	return dataLength;
 }
 
-int NectisCellular::SocketReceive(int connectId, byte* data, int dataSize, long timeout)
+int NectisCellularBG96::SocketReceive(int connectId, byte* data, int dataSize, long timeout)
 {
 	Stopwatch sw;
 	sw.Restart();
@@ -805,7 +805,7 @@ int NectisCellular::SocketReceive(int connectId, byte* data, int dataSize, long 
 	return dataLength;
 }
 
-int NectisCellular::SocketReceive(int connectId, char* data, int dataSize, long timeout)
+int NectisCellularBG96::SocketReceive(int connectId, char* data, int dataSize, long timeout)
 {
 	Stopwatch sw;
 	sw.Restart();
@@ -817,7 +817,7 @@ int NectisCellular::SocketReceive(int connectId, char* data, int dataSize, long 
 	return dataLength;
 }
 
-bool NectisCellular::SocketClose(int connectId)
+bool NectisCellularBG96::SocketClose(int connectId)
 {
 	if (connectId >= CONNECT_ID_NUM) return RET_ERR(false, E_UNKNOWN);
 
@@ -828,7 +828,7 @@ bool NectisCellular::SocketClose(int connectId)
 	return RET_OK(true);
 }
 
-int NectisCellular::HttpGet(const char* url, char* data, int dataSize)
+int NectisCellularBG96::HttpGet(const char* url, char* data, int dataSize)
 {
 	NectisCellularHttpHeader header;
 	header["Accept"] = "*/*";
@@ -838,7 +838,7 @@ int NectisCellular::HttpGet(const char* url, char* data, int dataSize)
 	return HttpGet(url, data, dataSize, header);
 }
 
-int NectisCellular::HttpGet(const char* url, char* data, int dataSize, const NectisCellularHttpHeader& header)
+int NectisCellularBG96::HttpGet(const char* url, char* data, int dataSize, const NectisCellularHttpHeader& header)
 {
 	std::string response;
 	ArgumentParser parser;
@@ -924,7 +924,7 @@ int NectisCellular::HttpGet(const char* url, char* data, int dataSize, const Nec
 	return RET_OK(contentLength);
 }
 
-bool NectisCellular::HttpPost(const char* url, const char* data, int* responseCode)
+bool NectisCellularBG96::HttpPost(const char* url, const char* data, int* responseCode)
 {
 	constexpr char HTTP_CONTENT_TYPE[] = "application/json";
 
@@ -937,7 +937,7 @@ bool NectisCellular::HttpPost(const char* url, const char* data, int* responseCo
 	return HttpPost(url, data, responseCode, header);
 }
 
-bool NectisCellular::HttpPost(const char* url, const char* data, int* responseCode, const NectisCellularHttpHeader& header)
+bool NectisCellularBG96::HttpPost(const char* url, const char* data, int* responseCode, const NectisCellularHttpHeader& header)
 {
 	std::string response;
 	ArgumentParser parser;
@@ -1016,7 +1016,7 @@ bool NectisCellular::HttpPost(const char* url, const char* data, int* responseCo
   \param out   a pointer to an output buffer to receive response message.
   \param outSize specify allocated size of `out` in bytes.
 */
-bool NectisCellular::SendUSSD(const char* in, char* out, int outSize)
+bool NectisCellularBG96::SendUSSD(const char* in, char* out, int outSize)
 {
 	if (in == NULL || out == NULL) {
 		return RET_ERR(false, E_UNKNOWN);
@@ -1045,7 +1045,7 @@ bool NectisCellular::SendUSSD(const char* in, char* out, int outSize)
 	return RET_OK(true);
 }
 
-void NectisCellular::SystemReset()
+void NectisCellularBG96::SystemReset()
 {
 	NVIC_SystemReset();
 }
@@ -1056,11 +1056,11 @@ void NectisCellular::SystemReset()
  * For CAMI qibanca nectis series on nRF52840. 
  */
 
-void NectisCellular::SoftReset() {
+void NectisCellularBG96::SoftReset() {
 	SystemReset();
 }
 
-void NectisCellular::Begin() {
+void NectisCellularBG96::Begin() {
 	// Initialize Uart between BL654 and BG96.
 	Serial1.setPins(MODULE_UART_RX_PIN, MODULE_UART_TX_PIN, MODULE_RTS_PIN, MODULE_CTS_PIN);
 	Serial1.begin(115200);
@@ -1068,11 +1068,11 @@ void NectisCellular::Begin() {
 	delay(200);
 }
 
-void NectisCellular::End() {
+void NectisCellularBG96::End() {
 	Serial1.end();
 }
 
-void NectisCellular::InitLteM() {
+void NectisCellularBG96::InitLteM() {
 	constexpr char APN[] = "soracom.io";
 	constexpr char USERNAME[] = "sora";
 	constexpr char PASSWORD[] = "sora";
@@ -1097,7 +1097,7 @@ void NectisCellular::InitLteM() {
 	}
 }
 
-void NectisCellular::InitNbIoT() {
+void NectisCellularBG96::InitNbIoT() {
 	constexpr char APN[] = "mtc.gen";
 	constexpr char USERNAME[] = "mtc";
 	constexpr char PASSWORD[] = "mtc";
@@ -1122,7 +1122,7 @@ void NectisCellular::InitNbIoT() {
 	}
 }
 
-int NectisCellular::GetReceivedSignalStrengthIndicator() {
+int NectisCellularBG96::GetReceivedSignalStrengthIndicator() {
 	int rssi = GetReceivedSignalStrength();
 	int rssi_count = 0;
 	while (rssi == - 999) {
@@ -1137,7 +1137,7 @@ int NectisCellular::GetReceivedSignalStrengthIndicator() {
 	return rssi;
 }
 
-bool NectisCellular::IsTimeGot(struct tm *tim, bool jst) {
+bool NectisCellularBG96::IsTimeGot(struct tm *tim, bool jst) {
 	std::string response;
 
 	// AT+QLTS=1 -> Acquire UTC
@@ -1180,7 +1180,7 @@ bool NectisCellular::IsTimeGot(struct tm *tim, bool jst) {
 	return RET_OK(true);
 }
 
-void NectisCellular::GetCurrentTime(struct tm *tim, bool jst) {
+void NectisCellularBG96::GetCurrentTime(struct tm *tim, bool jst) {
 	// Get time in JST.
 	while (!IsTimeGot(tim, jst)) {
 		Serial.println("### ERROR! ###");
@@ -1189,7 +1189,7 @@ void NectisCellular::GetCurrentTime(struct tm *tim, bool jst) {
 }
 
 
-bool NectisCellular::HttpPost(const char* url, const char* data, const int dataSize, int* responseCode, const NectisCellularHttpHeader& header)
+bool NectisCellularBG96::HttpPost(const char* url, const char* data, const int dataSize, int* responseCode, const NectisCellularHttpHeader& header)
 {
 	std::string response;
 	ArgumentParser parser;
@@ -1261,7 +1261,7 @@ bool NectisCellular::HttpPost(const char* url, const char* data, const int dataS
 	return RET_OK(true);
 }
 
-bool NectisCellular::HttpPost(const char *url, const byte *data, const int dataSize, int *responseCode, const NectisCellularHttpHeader &header) {
+bool NectisCellularBG96::HttpPost(const char *url, const byte *data, const int dataSize, int *responseCode, const NectisCellularHttpHeader &header) {
 	std::string response;
 	ArgumentParser parser;
     
@@ -1343,7 +1343,7 @@ bool NectisCellular::HttpPost(const char *url, const byte *data, const int dataS
 	return RET_OK(true);
 }
 
-bool NectisCellular::HttpPost2(const char *url, const char *postData, int postDataSize, char *recvData, int recvDataSize, int *respCode) {
+bool NectisCellularBG96::HttpPost2(const char *url, const char *postData, int postDataSize, char *recvData, int recvDataSize, int *respCode) {
 	NectisCellularHttpHeader header;
 	header["Accept"] = "*/*";
 	header["User-Agent"] = HTTP_USER_AGENT;
@@ -1353,7 +1353,7 @@ bool NectisCellular::HttpPost2(const char *url, const char *postData, int postDa
 	return HttpPost2(url, postData, postDataSize, recvData, recvDataSize, respCode, header);
 }
 
-bool NectisCellular::HttpPost2(const char *url, const char *postData, int postDataSize, char *recvData, int recvDataSize, int *respCode, const NectisCellularHttpHeader &header) {
+bool NectisCellularBG96::HttpPost2(const char *url, const char *postData, int postDataSize, char *recvData, int recvDataSize, int *respCode, const NectisCellularHttpHeader &header) {
 	std::string response;
 	ArgumentParser parser;
 
@@ -1459,7 +1459,7 @@ bool NectisCellular::HttpPost2(const char *url, const char *postData, int postDa
 }
 
 
-void NectisCellular::PostDataViaHTTP(byte *post_data, int data_size) {
+void NectisCellularBG96::PostDataViaHTTP(byte *post_data, int data_size) {
 	Serial.println("### Post BINARY/HTTP.");
 	
 	constexpr char HTTP_CONTENT_TYPE[] = "application/octet-stream";
@@ -1483,7 +1483,7 @@ err:
 	delay(INTERVAL);
 }
 
-void NectisCellular::PostDataViaHTTP(char *post_data, int data_size) {
+void NectisCellularBG96::PostDataViaHTTP(char *post_data, int data_size) {
 	Serial.println("### Post JSON/HTTP.");
 	
 	constexpr char HTTP_CONTENT_TYPE[] = "application/json";
@@ -1507,7 +1507,7 @@ err:
 	delay(INTERVAL);
 }
 
-void NectisCellular::PostDataViaUdp(byte *post_data, int data_size) {
+void NectisCellularBG96::PostDataViaUdp(byte *post_data, int data_size) {
 	Serial.println("### Open Socket.");
 
 	int connectId;
@@ -1550,7 +1550,7 @@ err:
 	delay(INTERVAL);
 }
 
-void NectisCellular::PostDataViaUdp(char *post_data, int data_size) {
+void NectisCellularBG96::PostDataViaUdp(char *post_data, int data_size) {
 	Serial.println("### Open Socket.");
 
 	int connectId;

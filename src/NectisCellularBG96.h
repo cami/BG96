@@ -8,10 +8,10 @@
 #include <string>
 #include "NectisCellularHttpHeader.h"
 
-#define NECTIS_TCP		(NectisCellular::SOCKET_TCP)
-#define NECTIS_UDP		(NectisCellular::SOCKET_UDP)
+#define NECTIS_TCP		(NectisCellularBG96::SOCKET_TCP)
+#define NECTIS_UDP		(NectisCellularBG96::SOCKET_UDP)
 
-class NectisCellular
+class NectisCellularBG96
 {
 public:
 	enum ErrorCodeType {
@@ -70,7 +70,7 @@ public:
 	//bool ReadResponseCallback(const char* response);	// Internal use only.
 
 public:
-	NectisCellular();
+	NectisCellularBG96();
 	ErrorCodeType GetLastError() const;
 	void Init();
 	void PowerSupplyCellular(bool on);

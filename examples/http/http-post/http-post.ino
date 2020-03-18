@@ -1,8 +1,8 @@
-#include <NectisCellular.h>
+#include <NectisCellularBG96.h>
 
 #define WEBHOOK_URL       "http://unified.soracom.io"
 
-NectisCellular Nectis;
+NectisCellularBG96 BG96;
 
 void setup() {
   char data[100];
@@ -14,14 +14,14 @@ void setup() {
   Serial.println("--- START ---------------------------------------------------");
 
   Serial.println("### I/O Initialize.");
-  Nectis.Init();
+  BG96.Init();
   delay(100);
   Serial.println("### Power supply cellular ON.");
-  Nectis.PowerSupplyCellular(true);
+  BG96.PowerSupplyCellular(true);
   delay(100);
 
-  Nectis.Bg96Begin();
-  Nectis.InitLteM();
+  BG96.Bg96Begin();
+  BG96.InitLteM();
 
   Serial.println("### Setup completed.");
 
@@ -33,11 +33,11 @@ void setup() {
   Serial.print(data);
   Serial.println("");
 
-//  if (!Nectis.HttpPost(WEBHOOK_URL, data, &status)) {
+//  if (!BG96.HttpPost(WEBHOOK_URL, data, &status)) {
 //    Serial.println("### ERROR! ###");
 //  }
 
-  Nectis.PostDataViaHttp(data);
+  BG96.PostDataViaHttp(data);
   
   Serial.print("Status:");
   Serial.println(status);

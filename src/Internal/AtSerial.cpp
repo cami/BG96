@@ -3,7 +3,7 @@
 
 #include "Debug.h"
 #include "slre.901d42c/slre.h"
-#include "../NectisCellular.h"
+#include "../NectisCellularBG96.h"
 #include <string.h>
 
 #define READ_BYTE_TIMEOUT	(10)
@@ -12,7 +12,7 @@
 #define CHAR_CR (0x0d)
 #define CHAR_LF (0x0a)
 
-AtSerial::AtSerial(SerialAPI* serial, NectisCellular* nectis) : _Serial(serial), _Nectis(nectis), _EchoOn(true)
+AtSerial::AtSerial(SerialAPI* serial, NectisCellularBG96* bg96) : _Serial(serial), _BG96(bg96), _EchoOn(true)
 {
 }
 

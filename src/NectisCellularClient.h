@@ -2,20 +2,20 @@
 
 #include "NectisCellularConfig.h"
 
-#include "NectisCellular.h"
+#include "NectisCellularBG96.h"
 #include <Client.h>
 #include <queue>
 
 class NectisCellularClient : public Client {
 
 protected:
-	NectisCellular* _Nectis;
+	NectisCellularBG96* _BG96;
 	int _ConnectId;
 	std::queue<byte> _ReceiveQueue;
 	byte* _ReceiveBuffer;
 
 public:
-	NectisCellularClient(NectisCellular* Nectis);
+	NectisCellularClient(NectisCellularBG96* _BG96);
 	virtual ~NectisCellularClient();
 
 	virtual int connect(IPAddress ip, uint16_t port);
